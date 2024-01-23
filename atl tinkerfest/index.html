@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://unpkg.com/tailwindcss@^1.0/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: url('back.jpg') center/cover fixed no-repeat; /* Background image */
+            background-color: rgba(240, 244, 248, 0.8); /* Semi-transparent background color */
+            font-family: 'Arial', sans-serif;
+            margin: 0; /* Remove default body margin */
+            padding: 0; /* Remove default body padding */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            overflow: hidden; /* Hide overflow to prevent horizontal scrolling */
+            position: relative; /* Relative positioning for child elements */
+        }
+
+        .image-container {
+            text-align: center;
+            margin-bottom: 20px;
+            z-index: 2; /* Move above the background */
+            transition: opacity 0.5s ease; /* Smooth transition for opacity change */
+        }
+
+        .image-container img {
+            width: 100%; /* Make the image fill the container */
+            max-height: 200px; /* Limit the height to avoid distortion */
+            object-fit: cover; /* Maintain aspect ratio and cover the container */
+            border-radius: 8px;
+            opacity: 1; /* Initial opacity */
+            transition: transform 0.5s ease; /* Smooth transition for transform change */
+        }
+
+        .card {
+            width: 100%;
+            max-width: 400px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+            z-index: 1; /* Move the card above the background */
+            margin-bottom: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            font-size: 14px;
+            margin-bottom: 8px;
+            color: #4a5568; /* Dark blue-gray text */
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #cbd5e0; /* Light gray border */
+            border-radius: 4px;
+            background-color: #edf2f7; /* Light gray background */
+            color: #2d3748; /* Dark blue-gray text */
+        }
+
+        .login-btn {
+            background-color: #2c5282; /* Dark blue button color */
+            color: #ffffff;
+            padding: 10px 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        .login-btn:hover {
+            background-color: #1a365d; /* Slightly darker blue on hover */
+        }
+
+        .design-elements {
+            display: flex;
+            justify-content: space-around;
+            z-index: 2; /* Move above the background */
+        }
+
+        .party-symbol {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+            margin-top: 20px;
+        }
+
+        .party-symbol img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Add a class to modify the image properties on scroll */
+        .submerge {
+            opacity: 0; /* Set opacity to 0 */
+            transform: translateY(-20px); /* Move the image up slightly */
+        }
+    </style>
+    <title>Login Page</title>
+</head>
+<body>
+    <div class="image-container" id="imageContainer">
+        <img src="r.png" alt="Rectangular Picture">
+    </div>
+
+    <div class="card">
+        <h2 class="text-2xl font-semibold mb-4 text-center text-indigo-600">Citizen Login</h2>
+        <form id="loginForm">
+            <div class="input-group">
+                <label for="name" class="text-gray-700">Name:</label>
+                <input type="text" id="name" name="name" required>
+            </div>
+            <div class="input-group">
+                <label for="aadhar" class="text-gray-700">Aadhar Number:</label>
+                <input type="text" id="aadhar" name="aadhar" required>
+            </div>
+
+            <div class="input-group">
+                <label for="voterId" class="text-gray-700">Voter ID Number:</label>
+                <input type="text" id="voterId" name="voterId" required>
+            </div>
+
+            <button type="button" class="login-btn w-full" onclick="submitForm()">Login</button>
+        </form>
+    </div>
+
+  
+
+    <script>
+        // Add event listener for scroll to trigger the effect
+        window.addEventListener('scroll', handleScroll);
+
+        function handleScroll() {
+            var imageContainer = document.getElementById('imageContainer');
+
+            // Get the distance scrolled from the top of the page
+            var scrollDistance = window.scrollY;
+
+            // Set a threshold value (adjust as needed)
+            var threshold = 100;
+
+            // Apply the 'submerge' class when scrolled beyond the threshold
+            if (scrollDistance > threshold) {
+                imageContainer.classList.add('submerge');
+            } else {
+                imageContainer.classList.remove('submerge');
+            }
+        }
+
+        function submitForm() {
+            // You can add client-side validation if needed
+            // For now, assuming the form is valid, you can proceed to check against Google Sheet
+            var aadhar = document.getElementById('aadhar').value;
+            var voterId = document.getElementById('voterId').value;
+
+            // Send the Aadhar and Voter ID to the server-side for validation
+            // You would typically use an AJAX request to send data to your server
+
+            // Example using fetch:
+            fetch('https://script.google.com/macros/s/your-deployment-id/exec', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ aadhar, voterId }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.valid) {
+                    alert('Login Successful');
+                    // Redirect or perform additional actions here
+                } else {
+                    alert('Invalid Aadhar or Voter ID');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
